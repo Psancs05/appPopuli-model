@@ -2,6 +2,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from flask import Flask, request, jsonify
 from gevent.pywsgi import WSGIServer
 import Predictions.main_predictions
+import os
 
 app = Flask(__name__)
 SCRIPT = '/Predictions/main_predictions.py'
@@ -48,5 +49,6 @@ def ping():
 
 
 if __name__ == '__main__':
-    http_server = WSGIServer(("0.0.0.0", 8080), app)
+    port = int(os.environ.get("PORT", 8080))
+    http_server = WSGIServer(("0.0.0.0", port), app)
     http_server.serve_forever()
