@@ -52,6 +52,12 @@ def api():
         # Acceder al archivo de imagen cargado
         image_file = request.files.get('image')
 
+        image_file.seek(0, 2)  # Mover al final del archivo
+        file_size = image_file.tell()  # Obtener la posición, que es igual al tamaño del archivo en bytes
+        image_file.seek(0)  # Mover de nuevo al inicio del archivo para futuras operaciones
+        print(f"File size: {file_size} bytes")
+
+
         # Si no se proporcionó ningún archivo, devolver un error
         if image_file is None:
             return jsonify({'estado': 'ko', 'resultado': 'No se proporcionó una imagen'}), 400
