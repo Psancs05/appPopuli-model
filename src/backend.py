@@ -1,10 +1,12 @@
 from decimal import Decimal, ROUND_HALF_UP
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from gevent.pywsgi import WSGIServer
 import Predictions.main_predictions
 import os
 
 app = Flask(__name__)
+CORS(app)
 SCRIPT = '/Predictions/main_predictions.py'
 
 @app.errorhandler(405)
