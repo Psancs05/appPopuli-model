@@ -4,6 +4,8 @@ from flask_cors import CORS
 from gevent.pywsgi import WSGIServer
 import Predictions.main_predictions
 import os
+from PIL import Image
+from io import BytesIO
 
 app = Flask(__name__)
 CORS(app)
@@ -21,28 +23,54 @@ def handle_method_not_allowed(e):
 def handle_method_not_allowed(e):
     return jsonify({'estado': 'ko', 'resultado': 'El argumento ruta_img o ruta_model estan mal '}), 500
 
+# @app.route('/api', methods=['POST'])
+# def api():
+#     try:
+#         ruta_img = request.get_json().get('ruta_img')
+#         ruta_model = request.get_json().get('ruta_model')
+
+#         # print ruta_img and ruta_model
+#         print("ruta_img: ",ruta_img)
+#         print("ruta_model: ",ruta_model)
+
+#         # Comprueba el parámetro
+#         if ruta_img is None:
+#             return jsonify({'estado': 'ko', 'resultado': 'El argumento ruta_img o ruta_model estan mal '}), 500
+
+#         if ruta_model is None:
+#             output = Predictions.main_predictions.main(ruta_img)
+#         else:
+#             output = Predictions.main_predictions.main(ruta_img,ruta_model)
+        
+#         return jsonify({'estado': 'ok', 'resultado': output})
+#     except Exception as e:
+#         return jsonify({'estado': 'ko', 'resultado': 'Error en el engine' , 'excepcion': str(e)})
+
 @app.route('/api', methods=['POST'])
 def api():
     try:
-        ruta_img = request.get_json().get('ruta_img')
-        ruta_model = request.get_json().get('ruta_model')
+        # Acceder al archivo de imagen cargado
+        image_file = request.files.get('image')
 
-        # print ruta_img and ruta_model
-        print("ruta_img: ",ruta_img)
-        print("ruta_model: ",ruta_model)
+        # Si no se proporcionó ningún archivo, devolver un error
+        if image_file is None:
+            return jsonify({'estado': 'ko', 'resultado': 'No se proporcionó una imagen'}), 400
 
-        # Comprueba el parámetro
-        if ruta_img is None:
-            return jsonify({'estado': 'ko', 'resultado': 'El argumento ruta_img o ruta_model estan mal '}), 500
+        # Cargar la imagen en PIL para su posterior procesamiento
+        image = Image.open(BytesIO(image_file.read()))
 
+        ruta_model = request.form.get('ruta_model')  # Si necesitas ruta_model, puedes enviarlo como parte del FormData
+
+        # Tu código para hacer la predicción, asumiendo que tu función main() puede manejar un objeto PIL
         if ruta_model is None:
-            output = Predictions.main_predictions.main(ruta_img)
+            output = Predictions.main_predictions.main(image)
         else:
-            output = Predictions.main_predictions.main(ruta_img,ruta_model)
-        
+            output = Predictions.main_predictions.main(image, ruta_model)
+
         return jsonify({'estado': 'ok', 'resultado': output})
+
     except Exception as e:
-        return jsonify({'estado': 'ko', 'resultado': 'Error en el engine' , 'excepcion': str(e)})
+        return jsonify({'estado': 'ko', 'resultado': 'Error en el engine', 'excepcion': str(e)})
     
 @app.route('/api', methods=['GET'])
 def ping():
