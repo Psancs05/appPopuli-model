@@ -49,6 +49,7 @@ def handle_method_not_allowed(e):
 @app.route('/api', methods=['POST'])
 def api():
     try:
+        print("req", request)
         # Acceder al archivo de imagen cargado
         image_file = request.files.get('image')
 
