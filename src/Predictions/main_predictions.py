@@ -34,7 +34,7 @@ PLAGAS = [
     "Xanthomonas populi",
 ]
 
-PATH_MODEL = os.path.join('../','data', 'models', 'modelo.h5')
+PATH_MODEL = os.path.join('./','data', 'models', 'modelo.h5')
 
 def loadModel(path_model):
     return  tf.keras.models.load_model(path_model)
