@@ -23,41 +23,12 @@ def handle_method_not_allowed(e):
 def handle_method_not_allowed(e):
     return jsonify({'estado': 'ko', 'resultado': 'El argumento ruta_img o ruta_model estan mal '}), 500
 
-# @app.route('/api', methods=['POST'])
-# def api():
-#     try:
-#         ruta_img = request.get_json().get('ruta_img')
-#         ruta_model = request.get_json().get('ruta_model')
-
-#         # print ruta_img and ruta_model
-#         print("ruta_img: ",ruta_img)
-#         print("ruta_model: ",ruta_model)
-
-#         # Comprueba el parámetro
-#         if ruta_img is None:
-#             return jsonify({'estado': 'ko', 'resultado': 'El argumento ruta_img o ruta_model estan mal '}), 500
-
-#         if ruta_model is None:
-#             output = Predictions.main_predictions.main(ruta_img)
-#         else:
-#             output = Predictions.main_predictions.main(ruta_img,ruta_model)
-        
-#         return jsonify({'estado': 'ok', 'resultado': output})
-#     except Exception as e:
-#         return jsonify({'estado': 'ko', 'resultado': 'Error en el engine' , 'excepcion': str(e)})
 
 @app.route('/api', methods=['POST'])
 def api():
     try:
-        print("req", request)
         # Acceder al archivo de imagen cargado
         image_file = request.files.get('image')
-
-        image_file.seek(0, 2)  # Mover al final del archivo
-        file_size = image_file.tell()  # Obtener la posición, que es igual al tamaño del archivo en bytes
-        image_file.seek(0)  # Mover de nuevo al inicio del archivo para futuras operaciones
-        print(f"File size: {file_size} bytes")
-
 
         # Si no se proporcionó ningún archivo, devolver un error
         if image_file is None:

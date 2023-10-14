@@ -1,4 +1,6 @@
 import tensorflow as tf
+from tensorflow.keras.preprocessing.image import img_to_array
+
 import os, sys
 
 PLAGAS = [
@@ -37,13 +39,13 @@ PATH_MODEL = os.path.join('../','data', 'models', 'modelo.h5')
 def loadModel(path_model):
     return  tf.keras.models.load_model(path_model)
 
-def resizeImages(path_image):
-    img = tf.io.read_file(path_image)
-    img = tf.image.decode_image(img, channels=3)
-    img = tf.image.resize(img, (224, 224))
-    img = tf.cast(img, tf.float32) / 255.0
 
+def resizeImages(img):
+    img = img.resize((224, 224))
+    img = img_to_array(img)
+    img = img.astype('float32') / 255.0
     return tf.expand_dims(img, axis=0)
+
 
 def main(path_image, path_model=PATH_MODEL):
 
