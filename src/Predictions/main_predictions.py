@@ -37,7 +37,11 @@ PLAGAS = [
 PATH_MODEL = os.path.join('./','data', 'models', 'modelo.h5')
 
 def loadModel(path_model):
-    return  tf.keras.models.load_model(path_model)
+    # load the model in cpu
+    with tf.device('/cpu:0'):
+        model = tf.keras.models.load_model(path_model)
+
+    return  model
 
 
 def resizeImages(img):
@@ -48,10 +52,6 @@ def resizeImages(img):
 
 
 def main(path_image, path_model=PATH_MODEL):
-
-    # Carga el modelo
-    loaded_model = loadModel(path_model)
-
     # Resize las dimensiones de la iamgen
     input_data   = resizeImages(path_image)
 
@@ -62,6 +62,8 @@ def main(path_image, path_model=PATH_MODEL):
     class_name = PLAGAS[class_idx]
     return class_name
 
+
+loaded_model = loadModel(os.path.join('./','data', 'models', 'modelo.h5'))
 
 if __name__ == '__main__' :
 
